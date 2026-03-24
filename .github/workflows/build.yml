@@ -1,0 +1,22 @@
+name: Build C++ Optimizer
+
+# Koda her yeni güncelleme attığında bu sistem otomatik çalışır
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: windows-latest 
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: C++ Kodunu Derle
+      run: g++ main.cpp -o QruxOptimizer.exe -static-libgcc -static-libstdc++
+      
+    - name: Exe Dosyasini Yayinla
+      uses: actions/upload-artifact@v4
+      with:
+        name: QruxOptimizer-Release
+        path: QruxOptimizer.exe
