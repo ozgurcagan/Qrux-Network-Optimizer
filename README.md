@@ -1,4 +1,4 @@
-# Qrux-Network-Optimizera
+# Qrux-Network-Optimizer
 
 Piyasada "Pinginizi 0'a indirir", "FPS'inizi 5 kat artırır" gibi asılsız vaatlerde bulunan kapalı kaynaklı ve ne yaptığı belirsiz yazılımlara karşı geliştirilmiş, **tamamen şeffaf ve açık kaynaklı** bir sistem & ağ optimizasyon aracıdır.
 
