@@ -18,16 +18,13 @@ jobs:
     - name: Depoyu Klonla (Checkout)
       uses: actions/checkout@v4
 
-    - name: C++ Kodunu Derle (Tam Optimize Edilmis, Bagimsiz Release Build)
+    - name: C++ Kodunu Derle (Sifir Bagimlilik - Mutlak Statik)
       shell: cmd 
-      # -O3: Maksimum hız ve performans optimizasyonu
-      # -s: Hata ayıklama sembollerini silerek boyutu küçültme ve tersine mühendisliği zorlaştırma
-      # -DNDEBUG: Test ve geliştirme (debug) makrolarını devre dışı bırakma
-      # -static: Tüm DLL ve iş parçacığı kütüphanelerini exe içine mühürleme (Taşınabilirlik)
+      # -Wl,-Bstatic -lpthread komutu, o inatçı DLL dosyasının zorla exe'ye gömülmesini sağlar
       run: |
-        g++ main.cpp -o QruxNetworkOptimizer.exe -O3 -s -DNDEBUG -static
+        g++ main.cpp -o QruxNetworkOptimizer.exe -O3 -s -DNDEBUG -static -static-libgcc -static-libstdc++ -Wl,-Bstatic -lpthread -Wl,-Bdynamic
 
-    - name: Derlenen Exe Dosyasini Gecici Olarak Yayinla (Artifact)
+    - name: Derlenen Exe Dosyasini Gecici Olarak Yayinla
       uses: actions/upload-artifact@v4
       with:
         name: QruxNetworkOptimizer-Release
