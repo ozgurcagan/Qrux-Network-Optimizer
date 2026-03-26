@@ -1,22 +1,30 @@
 name: Build C++ Optimizer
 
-# Koda her yeni güncelleme attığında bu sistem otomatik çalışır
+# Ana dala (main) her yeni kod itildiğinde (push) çalışır
 on:
   push:
     branches: [ "main" ]
+  # İsteğe bağlı olarak GitHub üzerinden manuel tetikleme seçeneği eklenmiştir
+  workflow_dispatch: 
 
 jobs:
   build:
     runs-on: windows-latest 
-    
+
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: C++ Kodunu Derle
-      run: g++ main.cpp -o QruxOptimizer.exe -static-libgcc -static-libstdc++
-      
-    - name: Exe Dosyasini Yayinla
+    - name: Depoyu Klonla (Checkout)
+      uses: actions/checkout@v4
+
+    - name: C++ Kodunu Derle (Tam Optimize Edilmiş Release Build)
+      # cmd kullanılarak Windows ortamında hatasız çalışması garanti altına alınmıştır
+      shell: cmd 
+      run: |
+        g++ main.cpp -o QruxOptimizer.exe -O3 -s -DNDEBUG -static-libgcc -static-libstdc++
+
+    - name: Derlenen Exe Dosyasini Yayinla (Artifact)
       uses: actions/upload-artifact@v4
       with:
         name: QruxOptimizer-Release
         path: QruxOptimizer.exe
+        # Dosya bulunamazsa işlemin direkt hata vermesini sağlar (sessizce başarısız olmasını engeller)
+        if-no-files-found: error
