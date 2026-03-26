@@ -3,12 +3,10 @@ name: Build and Release C++ Optimizer
 on:
   push:
     branches: [ "main" ]
-    # İş akışının yeni bir versiyon etiketi (tag) atıldığında da çalışmasını sağlar
-    tags:
-      - 'v*' 
+  tags:
+    - 'v*' 
   workflow_dispatch: 
 
-# GitHub Actions'ın "Releases" sekmesine dosya yükleyebilmesi için gereken yetkilendirme (Zorunlu)
 permissions:
   contents: write 
 
@@ -20,10 +18,14 @@ jobs:
     - name: Depoyu Klonla (Checkout)
       uses: actions/checkout@v4
 
-    - name: C++ Kodunu Derle (Tam Optimize Edilmiş Release Build)
+    - name: C++ Kodunu Derle (Tam Optimize Edilmis, Bagimsiz Release Build)
       shell: cmd 
+      # -O3: Maksimum hız ve performans optimizasyonu
+      # -s: Hata ayıklama sembollerini silerek boyutu küçültme ve tersine mühendisliği zorlaştırma
+      # -DNDEBUG: Test ve geliştirme (debug) makrolarını devre dışı bırakma
+      # -static: Tüm DLL ve iş parçacığı kütüphanelerini exe içine mühürleme (Taşınabilirlik)
       run: |
-        g++ main.cpp -o QruxNetworkOptimizer.exe -O3 -s -DNDEBUG -static-libgcc -static-libstdc++
+        g++ main.cpp -o QruxNetworkOptimizer.exe -O3 -s -DNDEBUG -static
 
     - name: Derlenen Exe Dosyasini Gecici Olarak Yayinla (Artifact)
       uses: actions/upload-artifact@v4
@@ -33,10 +35,8 @@ jobs:
         if-no-files-found: error
 
     - name: GitHub Release Olustur ve Exe Dosyasini Yukle
-      # Bu adım SADECE "v" ile başlayan bir etiket (tag) atıldığında çalışır. Normal push'larda atlanır.
       if: startsWith(github.ref, 'refs/tags/') 
       uses: softprops/action-gh-release@v2
       with:
         files: QruxNetworkOptimizer.exe
-        # Geçmiş commit mesajlarını okuyarak otomatik sürüm notu oluşturur
         generate_release_notes: true 
